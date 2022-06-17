@@ -36,7 +36,7 @@ const BlogContent = () => (
       </div>
     }
     renderItem={(item) => (
-      <List.Item
+      <List.Item 
         key={item.title}
         actions={[
           <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,

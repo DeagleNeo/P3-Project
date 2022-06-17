@@ -1,0 +1,61 @@
+pipeline{
+    agent any
+    environment{
+      AWS_ACCOUNT_ID = "000982848868"
+      AWS_DEFAULT_REGION = "ap-southeast-1"
+      ECR_URI = "public.ecr.aws/x7s4i7a1"
+
+    }
+    stages{
+
+    stage('Pull Respository Change'){
+    steps { 
+         sh "rm -r P3-Project"
+         sh "git clone https://github.com/DeagleNeo/P3-Project.git" 
+         sh "ls"
+    }  
+    }
+
+      
+    stage('Build Docker Image') {
+            steps {
+            dir('P3-Project/BackEnd'){
+            // sh "docker build -t linkhub ."
+            // sh "ls"
+                    script {
+                        app = docker.build("linkhub")
+                    }
+                    //sh "docker tag linkhub:latest public.ecr.aws/x7s4i7a1/linkhub:latest"
+              }
+      } 
+    }
+    
+    stage('Push to ECR'){
+    steps {
+
+      //sh 'rm -f ~/.dockercfg ~/.docker/config.json || true'
+
+      script{
+    
+    //sh("aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_URI}")
+
+     // docker.withRegistry('public.ecr.aws/x7s4i7a1/linkhub', 'ecr:us-east-1:aws-admin') 
+      docker.withRegistry('https://000982848868.dkr.ecr.ap-southeast-2.amazonaws.com', 'ecr:ap-southeast-2:aws-admin') 
+
+      {
+        //def customImage = docker.build("linkhub:${env.BUILD_ID}")
+        //customImage.push()
+        //docker.image('linkhub').push()
+        //sh("docker push public.ecr.aws/x7s4i7a1/linkhub:latest")
+        app.push()
+
+      }
+      }
+        // sh("aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/x7s4i7a1")
+        // sh("docker push linkhub:latest")
+      }
+    }  
+  
+}
+}
+

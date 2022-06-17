@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  webapp:
+    image: linkhub-bd
+    container_name: linkhub-bdc
+    expose:
+      - 5000
+    ports:
+      - 5000:5000
